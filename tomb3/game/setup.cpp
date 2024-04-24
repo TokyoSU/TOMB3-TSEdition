@@ -495,7 +495,6 @@ static void BaddyObjects()
 	}
 
 	obj = &objects[ROBOT_SENTRY_GUN];
-
 	if (obj->loaded)
 	{
 		obj->initialise = InitialiseAutogun;

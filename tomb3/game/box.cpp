@@ -893,7 +893,6 @@ void CreatureDie(short item_number, long explode)
 	}
 
 	pickup_number = item->carried_item;
-
 	while (pickup_number != NO_ITEM)
 	{
 		pickup = &items[pickup_number];

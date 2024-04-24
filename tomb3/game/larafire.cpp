@@ -410,9 +410,10 @@ void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, long damage)
 		{
 			for (int i = 0; i < 3; i++)
 				TriggerRicochetSpark(hitpos, GetRandomControl() & 0xFFF, 0);
-
 			SoundEffect(SFX_LARA_RICOCHET, &item->pos, SFX_DEFAULT);
 		}
+		else if (item->object_number == RAPTOR && (item->flags & IFL_CODEBITS_1))
+			DoBloodSplatGreen(hitpos->x, hitpos->y, hitpos->z, item->speed, item->pos.y_rot, item->room_number);
 		else if (item->object_number != TARGETS)
 			DoBloodSplat(hitpos->x, hitpos->y, hitpos->z, item->speed, item->pos.y_rot, item->room_number);
 	}

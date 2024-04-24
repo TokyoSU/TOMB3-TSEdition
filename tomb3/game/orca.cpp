@@ -107,8 +107,11 @@ void OrcaControl(short item_number)
 		room_number = item->room_number;
 		GetFloor(pos.x, pos.y, pos.z, &room_number);
 		h = GetWaterHeight(pos.x, pos.y, pos.z, room_number);
-
 		if (h != NO_HEIGHT && pos.y < h)
-			SetupRipple(pos.x, h, pos.z, -2 - (GetRandomControl() & 1), 0)->init = 0;
+		{
+			RIPPLE_STRUCT* ripple = SetupRipple(pos.x, h + 24, pos.z, 2 - (GetRandomControl() & 1), 0);
+			if (ripple != NULL)
+				ripple->init = 0;
+		}
 	}
 }

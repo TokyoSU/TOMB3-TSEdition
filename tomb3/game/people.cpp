@@ -50,12 +50,10 @@ long ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* bite, short extra_rotat
 {
 	ITEM_INFO* enemy;
 	CREATURE_INFO* creature;
-	FX_INFO* fx;
 	PHD_VECTOR pos;
 	GAME_VECTOR s;
 	GAME_VECTOR t;
 	long hit, targetable, dist, rnd, objLos;
-	short fx_num;
 
 	creature = (CREATURE_INFO*)item->data;
 	enemy = creature->enemy;
@@ -104,7 +102,7 @@ long ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* bite, short extra_rotat
 			if (hit)
 			{
 				enemy->hit_status = 1;
-				if (damage < 10)
+				if (damage < 11)
 					enemy->hit_points--;
 				else
 					enemy->hit_points -= short(damage / 10);
@@ -117,7 +115,10 @@ long ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* bite, short extra_rotat
 				pos.y = 0;
 				pos.z = 0;
 				GetJointAbsPosition(enemy, &pos, rnd);
-				DoBloodSplat(pos.x, pos.y, pos.z, enemy->speed, enemy->pos.y_rot, enemy->room_number);
+				if (enemy->object_number == RAPTOR && (enemy->flags & IFL_CODEBITS_1))
+					DoBloodSplatGreen(pos.x, pos.y, pos.z, enemy->speed, enemy->pos.y_rot, enemy->room_number);
+				else
+					DoBloodSplat(pos.x, pos.y, pos.z, enemy->speed, enemy->pos.y_rot, enemy->room_number);
 			}
 		}
 	}

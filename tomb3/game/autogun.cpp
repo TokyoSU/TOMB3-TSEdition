@@ -80,16 +80,9 @@ void AutogunControl(short item_number)
 		if (item->ai_bits & GUARD)
 		{
 			ITEM_INFO* nearestTarget = GetNearTarget(item, SECTOR(8), RAPTOR);
-			if (nearestTarget != NULL)
-			{
-				gun->enemy = nearestTarget;
-				if (gun->hurt_by_lara)
-					gun->enemy = lara_item;
-			}
-			else
-			{
-				gun->enemy = NULL;
-			}
+			gun->enemy = nearestTarget != NULL ? nearestTarget : NULL;
+			if (gun->hurt_by_lara)
+				gun->enemy = lara_item;
 		}
 
 		AI_INFO info;

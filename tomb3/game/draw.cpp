@@ -866,16 +866,18 @@ void PrintObjects(short room_number)
 			if (item->after_death < 32 && item->after_death > 0)
 			{
 				item->after_death++;
-
-				if (item->after_death == 2 || item->after_death == 5 || item->after_death == 11 || item->after_death == 20 ||
-					item->after_death == 27 || item->after_death == 32 || !(GetRandomDraw() & 7))
-					DoLotsOfBloodD(item->pos.x_pos, item->pos.y_pos - 64, item->pos.z_pos, 0, short(GetRandomDraw() << 1), item->room_number, 1);
+				if (item->after_death == 2 || item->after_death == 5 || item->after_death == 11 || item->after_death == 20 || item->after_death == 27 || item->after_death == 32 || !(GetRandomDraw() & 7))
+				{
+					if (item->object_number == RAPTOR)
+						DoLotsOfBloodDGreen(item->pos.x_pos, item->pos.y_pos - 128, item->pos.z_pos, 0, short(GetRandomDraw() << 1), item->room_number, 1);
+					else
+						DoLotsOfBloodD(item->pos.x_pos, item->pos.y_pos - 128, item->pos.z_pos, 0, short(GetRandomDraw() << 1), item->room_number, 1);
+				}
 			}
 		}
 	}
 
 	nPolyType = 6;
-
 	for (int i = r->fx_number; i != NO_ITEM; i = effects[i].next_fx)
 		DrawEffect(i);
 

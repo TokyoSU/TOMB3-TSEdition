@@ -46,6 +46,16 @@ long number_dynamics;
 
 long wibble;
 
+static int GetFreeRipples()
+{
+	for (int i = 0; i < _countof(ripples); i++)
+	{
+		if (ripples[i].on <= 0)
+			return i;
+	}
+	return -1;
+}
+
 void TriggerDynamic(long x, long y, long z, long falloff, long r, long g, long b)
 {
 	DYNAMIC* dl;
@@ -692,27 +702,57 @@ void TriggerBlood(long x, long y, long z, long angle, long num)
 	for (int i = 0; i < num; i++)
 	{
 		sptr = &sparks[GetFreeSpark()];
-		sptr->On = 1;
+		sptr->On = TRUE;
+		sptr->sR = 224;
+		sptr->sG = 0;
+		sptr->sB = 32;
+		sptr->dR = 192;
+		sptr->dG = 0;
+		sptr->dB = 24;
+		sptr->ColFadeSpeed = 8;
+		sptr->FadeToBlack = 8;
+		sptr->Life = 24;
+		sptr->sLife = 24;
+		sptr->TransType = 1;
+		sptr->Dynamic = -1;
+		sptr->x = (GetRandomControl() & 0x1F) + x - 16;
+		sptr->y = (GetRandomControl() & 0x1F) + y - 16;
+		sptr->z = (GetRandomControl() & 0x1F) + z - 16;
+		rad = GetRandomControl() & 0xF;
+		ang = ((GetRandomControl() & 0x1F) + angle - 16) & 0xFFF;
+		sptr->Xvel = -(rad * rcossin_tbl[ang << 1]) >> 5;
+		sptr->Yvel = -128 - (GetRandomControl() & 0xFF);
+		sptr->Zvel = (rad * rcossin_tbl[(ang << 1) + 1]) >> 5;
+		sptr->Friction = 4;
+		sptr->Flags = SF_BLOOD | SF_SCALE;
+		sptr->Scalar = 3;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = (GetRandomControl() & 0x1F) + 31;
+		sptr->Width = 2;
+		sptr->sWidth = 2;
+		sptr->Height = 2;
+		sptr->sHeight = 2;
+		sptr->dWidth = 2 - (GetRandomControl() & 1);
+		sptr->dHeight = 2 - (GetRandomControl() & 1);
+	}
+}
 
-		if (gameflow.language == 2)
-		{
-			sptr->sR = 112;
-			sptr->sG = 0;
-			sptr->sB = 224;
-			sptr->dR = 96;
-			sptr->dG = 0;
-			sptr->dB = 192;
-		}
-		else
-		{
-			sptr->sR = 224;
-			sptr->sG = 0;
-			sptr->sB = 32;
-			sptr->dR = 192;
-			sptr->dG = 0;
-			sptr->dB = 24;
-		}
+void TriggerBloodGreen(long x, long y, long z, long angle, long num)
+{
+	SPARKS* sptr;
+	long ang;
+	short rad;
 
+	for (int i = 0; i < num; i++)
+	{
+		sptr = &sparks[GetFreeSpark()];
+		sptr->On = TRUE;
+		sptr->sR = 0;
+		sptr->sG = 196;
+		sptr->sB = 64;
+		sptr->dR = 0;
+		sptr->dG = 64;
+		sptr->dB = 0;
 		sptr->ColFadeSpeed = 8;
 		sptr->FadeToBlack = 8;
 		sptr->Life = 24;
@@ -750,27 +790,13 @@ void TriggerBloodD(long x, long y, long z, long angle, long num)
 	for (int i = 0; i < num; i++)
 	{
 		sptr = &sparks[GetFreeSpark()];
-		sptr->On = 1;
-
-		if (gameflow.language == 2)
-		{
-			sptr->sR = 112;
-			sptr->sG = 0;
-			sptr->sB = 224;
-			sptr->dR = 96;
-			sptr->dG = 0;
-			sptr->dB = 192;
-		}
-		else
-		{
-			sptr->sR = 224;
-			sptr->sG = 0;
-			sptr->sB = 32;
-			sptr->dR = 192;
-			sptr->dG = 0;
-			sptr->dB = 24;
-		}
-
+		sptr->On = TRUE;
+		sptr->sR = 224;
+		sptr->sG = 0;
+		sptr->sB = 32;
+		sptr->dR = 192;
+		sptr->dG = 0;
+		sptr->dB = 24;
 		sptr->ColFadeSpeed = 8;
 		sptr->FadeToBlack = 8;
 		sptr->Life = 24;
@@ -799,67 +825,134 @@ void TriggerBloodD(long x, long y, long z, long angle, long num)
 	}
 }
 
-void TriggerUnderwaterBlood(long x, long y, long z, long size)
+void TriggerBloodDGreen(long x, long y, long z, long angle, long num)
 {
-	RIPPLE_STRUCT* ripple;
-	long n;
+	SPARKS* sptr;
+	long ang;
+	short rad;
 
-	ripple = ripples;
-	n = 0;
-
-	while (ripple->flags & 1)
+	for (int i = 0; i < num; i++)
 	{
-		ripple++;
-		n++;
-
-		if (n >= 16)
-			return;
+		sptr = &sparks[GetFreeSpark()];
+		sptr->On = TRUE;
+		sptr->sR = 0;
+		sptr->sG = 196;
+		sptr->sB = 64;
+		sptr->dR = 0;
+		sptr->dG = 64;
+		sptr->dB = 0;
+		sptr->ColFadeSpeed = 8;
+		sptr->FadeToBlack = 8;
+		sptr->Life = 24;
+		sptr->sLife = 24;
+		sptr->TransType = 1;
+		sptr->Dynamic = -1;
+		sptr->x = (GetRandomDraw() & 0x1F) + x - 16;
+		sptr->y = (GetRandomDraw() & 0x1F) + y - 16;
+		sptr->z = (GetRandomDraw() & 0x1F) + z - 16;
+		rad = GetRandomDraw() & 0xF;
+		ang = ((GetRandomDraw() & 0x1F) + angle - 16) & 0xFFF;
+		sptr->Xvel = -(rad * rcossin_tbl[ang << 1]) >> 5;
+		sptr->Yvel = -128 - (GetRandomDraw() & 0xFF);
+		sptr->Zvel = (rad * rcossin_tbl[(ang << 1) + 1]) >> 5;
+		sptr->Friction = 4;
+		sptr->Flags = SF_NONE;
+		sptr->Scalar = 3;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = (GetRandomDraw() & 0x1F) + 31;
+		sptr->Width = 2;
+		sptr->sWidth = 2;
+		sptr->Height = 2;
+		sptr->sHeight = 2;
+		sptr->dWidth = 2 - (GetRandomDraw() & 1);
+		sptr->dHeight = 2 - (GetRandomDraw() & 1);
 	}
+}
 
-	ripple->flags = 51;
-	ripple->init = 1;
-	ripple->life = (GetRandomControl() & 7) - 16;
-	ripple->size = (uchar)size;
+void TriggerUnderwaterBlood(long x, long y, long z, uchar size)
+{
+	int rippleIndex = GetFreeRipples();
+	if (rippleIndex == -1)
+		return;
+	RIPPLE_STRUCT* ripple = &ripples[rippleIndex];
+	ripple->on = TRUE;
 	ripple->x = (GetRandomControl() & 0x3F) + x - 32;
 	ripple->y = y;
 	ripple->z = (GetRandomControl() & 0x3F) + z - 32;
+	ripple->init = 1;
+	ripple->life = (GetRandomControl() & 7) - 16;
+	ripple->size = size;
+	ripple->r = 196;
+	ripple->g = 96;
+	ripple->b = 32;
+	ripple->flags = 51;
 }
 
-void TriggerUnderwaterBloodD(long x, long y, long z, long size)
+void TriggerUnderwaterBloodGreen(long x, long y, long z, uchar size)
 {
-	RIPPLE_STRUCT* ripple;
-	long n;
-
-	ripple = ripples;
-	n = 0;
-
-	while (ripple->flags & 1)
-	{
-		ripple++;
-		n++;
-
-		if (n >= 16)
-			return;
-	}
-
-	ripple->flags = 51;
+	int rippleIndex = GetFreeRipples();
+	if (rippleIndex == -1)
+		return;
+	RIPPLE_STRUCT* ripple = &ripples[rippleIndex];
+	ripple->on = TRUE;
+	ripple->x = (GetRandomControl() & 0x3F) + x - 32;
+	ripple->y = y;
+	ripple->z = (GetRandomControl() & 0x3F) + z - 32;
 	ripple->init = 1;
-	ripple->life = (GetRandomDraw() & 7) - 16;
-	ripple->size = (uchar)size;
+	ripple->life = (GetRandomControl() & 7) - 16;
+	ripple->size = size;
+	ripple->r = 0;
+	ripple->g = 196;
+	ripple->b = 64;
+	ripple->flags = 0x40;
+}
+
+void TriggerUnderwaterBloodD(long x, long y, long z, uchar size)
+{
+	int rippleIndex = GetFreeRipples();
+	if (rippleIndex == -1)
+		return;
+	RIPPLE_STRUCT* ripple = &ripples[rippleIndex];
+	ripple->on = TRUE;
 	ripple->x = (GetRandomDraw() & 0x3F) + x - 32;
 	ripple->y = y;
 	ripple->z = (GetRandomDraw() & 0x3F) + z - 32;
+	ripple->init = 1;
+	ripple->life = (GetRandomDraw() & 7) - 16;
+	ripple->size = size;
+	ripple->r = 196;
+	ripple->g = 96;
+	ripple->b = 32;
+	ripple->flags = 51;
+}
+
+void TriggerUnderwaterBloodDGreen(long x, long y, long z, uchar size)
+{
+	int rippleIndex = GetFreeRipples();
+	if (rippleIndex == -1)
+		return;
+	RIPPLE_STRUCT* ripple = &ripples[rippleIndex];
+	ripple->on = TRUE;
+	ripple->x = (GetRandomDraw() & 0x3F) + x - 32;
+	ripple->y = y;
+	ripple->z = (GetRandomDraw() & 0x3F) + z - 32;
+	ripple->init = 1;
+	ripple->life = (GetRandomDraw() & 7) - 16;
+	ripple->size = size;
+	ripple->r = 0;
+	ripple->g = 196;
+	ripple->b = 64;
+	ripple->flags = 0x40;
 }
 
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv, long smoke, long unused)
 {
 	SPARKS* sptr;
 	SPARKS* smokeSpark;
-	long dx, dz;
 
+	long dx, dz;
 	dx = lara_item->pos.x_pos - x;
 	dz = lara_item->pos.z_pos - z;
-
 	if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000)
 		return;
 
@@ -1829,7 +1922,7 @@ long GetFreeSpark()
 	free = next_spark;
 	sptr = &sparks[next_spark];
 
-	for (int i = 0; i < 192; i++)
+	for (int i = 0; i < _countof(sparks); i++)
 	{
 		if (sptr->On)
 		{
@@ -1871,20 +1964,12 @@ long GetFreeSpark()
 
 void InitialiseSparks()
 {
-	for (int i = 0; i < 192; i++)
-	{
-		sparks[i].On = 0;
+	memset(sparks, 0, sizeof(sparks));
+	for (int i = 0; i < _countof(sparks); i++)
 		sparks[i].Dynamic = -1;
-	}
-
-	for (int i = 0; i < 4; i++)
-		splashes[i].flags = 0;
-
-	for (int i = 0; i < 16; i++)
-		ripples[i].flags = 0;
-
-	for (int i = 0; i < 32; i++)
-		bats[i].flags = 0;
+	memset(splashes, 0, sizeof(splashes));
+	memset(ripples, 0, sizeof(ripples));
+	memset(bats, 0, sizeof(bats));
 }
 
 void UpdateSparks()
@@ -1892,14 +1977,11 @@ void UpdateSparks()
 	SPARKS* sptr;
 	SP_DYNAMIC* pDL;
 	long fade, uw, rnd, x, y, z, falloff, r, g, b;
-	uchar def;
 
-	def = (uchar)objects[EXPLOSION1].mesh_index;
-
-	for (int i = 0; i < 192; i++)
+	uchar def = (uchar)objects[EXPLOSION1].mesh_index;
+	for (int i = 0; i < _countof(sparks); i++)
 	{
 		sptr = &sparks[i];
-
 		if (!sptr->On)
 			continue;
 
@@ -2220,13 +2302,12 @@ void ControlGunShell(short fx_number)
 
 	if (room[room_number].flags & ROOM_UNDERWATER)
 	{
-		SetupRipple(fx->pos.x_pos, room[room_number].maxceiling, fx->pos.z_pos, -8 - (GetRandomControl() & 3), 1);
+		SetupRipple(fx->pos.x_pos, room[room_number].maxceiling + 24, fx->pos.z_pos, 8 - (GetRandomControl() & 3), 1);
 		KillEffect(fx_number);
 		return;
 	}
 
 	c = GetCeiling(floor, fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
-
 	if (fx->pos.y_pos < c)
 	{
 		SoundEffect(SFX_LARA_SHOTGUN_SHELL, &fx->pos, SFX_DEFAULT);
@@ -2276,43 +2357,23 @@ void ControlGunShell(short fx_number)
 		EffectNewRoom(fx_number, room_number);
 }
 
-RIPPLE_STRUCT* SetupRipple(long x, long y, long z, long size, long flags)
+RIPPLE_STRUCT* SetupRipple(long x, long y, long z, uchar size, uchar flags)
 {
-	RIPPLE_STRUCT* ripple;
-	long num;
-
-	ripple = ripples;
-	num = 0;
-
-	while (ripple->flags & 1)
-	{
-		ripple++;
-		num++;
-
-		if (num >= 16)
-			return ripple;
-	}
-
-	ripple = &ripples[num];
-
-	if (size < 0)
-	{
-		if (flags)
-			ripple->flags = 19;
-		else
-			ripple->flags = 3;
-
-		size = -size;
-	}
-	else
-		ripple->flags = 1;
-
-	ripple->init = 1;
-	ripple->size = (uchar)size;
-	ripple->life = (GetRandomControl() & 0xF) + 48;
+	int rippleIndex = GetFreeRipples();
+	if (rippleIndex == -1)
+		return NULL;
+	RIPPLE_STRUCT* ripple = &ripples[rippleIndex];
+	ripple->on = TRUE;
 	ripple->x = (GetRandomControl() & 0x7F) + x - 64;
 	ripple->y = y;
 	ripple->z = (GetRandomControl() & 0x7F) + z - 64;
+	ripple->r = 196;
+	ripple->g = 196;
+	ripple->b = 196;
+	ripple->init = 1;
+	ripple->size = size;
+	ripple->life = (GetRandomControl() & 0xF) + 48;
+	ripple->flags = flags;
 	return ripple;
 }
 
@@ -2455,12 +2516,10 @@ void UpdateSplashes()
 	for (int i = 0; i < 4; i++)
 	{
 		splash = &splashes[i];
-
 		if (!(splash->flags & 1))
 			continue;
 
 		set = 0;
-
 		for (int j = 0; j < 48; j++)
 		{
 			v = &splash->sv[j];
@@ -2476,7 +2535,6 @@ void UpdateSplashes()
 				v->zv = v->ozv;
 
 			v->yv += v->gravity << 3;
-
 			if (v->yv > 0x10000)
 				v->yv = 0x10000;
 
@@ -2495,17 +2553,15 @@ void UpdateSplashes()
 		if (set)
 		{
 			splash->life--;
-
 			if (!splash->life)
 				splash->flags = 0;
 		}
 	}
 
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < _countof(ripples); i++)
 	{
 		ripple = &ripples[i];
-
-		if (!(ripple->flags & 1))
+		if (!ripple->on)
 			continue;
 
 		if (ripple->size < 254)
@@ -2514,14 +2570,15 @@ void UpdateSplashes()
 		if (!ripple->init)
 		{
 			ripple->life -= 2;
-
 			if (ripple->life > 250)
+			{
 				ripple->flags = 0;
+				ripple->on = FALSE;
+			}
 		}
 		else if (ripple->init < ripple->life)
 		{
 			ripple->init += 4;
-
 			if (ripple->init >= ripple->life)
 				ripple->init = 0;
 		}
@@ -2530,9 +2587,7 @@ void UpdateSplashes()
 
 void ControlColouredLights(short item_number)
 {
-	ITEM_INFO* item;
-	long objnum;
-	uchar colours[5][3] =
+	static uchar coloredLightColour[5][3] =
 	{
 		{ 255, 0, 0 },		//RED_LIGHT
 		{ 0, 255, 0 },		//GREEN_LIGHT
@@ -2540,13 +2595,11 @@ void ControlColouredLights(short item_number)
 		{ 255, 192, 0 },	//AMBER_LIGHT 
 		{ 224, 224, 255 }	//WHITE_LIGHT
 	};
-
-	item = &items[item_number];
-
+	ITEM_INFO* item = &items[item_number];
 	if (TriggerActive(item))
 	{
-		objnum = item->object_number - RED_LIGHT;
-		TriggerDynamic(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, 24, colours[objnum][0], colours[objnum][1], colours[objnum][2]);
+		long objnum = item->object_number - RED_LIGHT;
+		TriggerDynamic(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, 24, coloredLightColour[objnum][0], coloredLightColour[objnum][1], coloredLightColour[objnum][2]);
 	}
 }
 

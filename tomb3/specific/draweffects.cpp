@@ -4175,11 +4175,10 @@ void S_DrawSplashes()
 		}
 	}
 
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < _countof(ripples); i++)
 	{
 		ripple = &ripples[i];
-
-		if (!(ripple->flags & 1))
+		if (!ripple->on)
 			continue;
 
 		p = (long*)&scratchpad[0];
@@ -4220,22 +4219,18 @@ void S_DrawSplashes()
 		z4 = *p++;
 
 		z1 <<= W2V_SHIFT;
-
 		if (z1 < phd_znear || z1 > phd_zfar)
 			continue;
 
 		z2 <<= W2V_SHIFT;
-
 		if (z2 < phd_znear || z2 > phd_zfar)
 			continue;
 
 		z3 <<= W2V_SHIFT;
-
 		if (z3 < phd_znear || z3 > phd_zfar)
 			continue;
 
 		z4 <<= W2V_SHIFT;
-
 		if (z4 < phd_znear || z4 > phd_zfar)
 			continue;
 
@@ -4245,7 +4240,6 @@ void S_DrawSplashes()
 			{
 				nSprite = objects[EXPLOSION1].mesh_index;
 				c1 = ripple->life;
-
 				if (gameflow.language == 2)
 					c = RGB_MAKE(c1 >> 1, 0, c1);
 				else
@@ -4257,12 +4251,9 @@ void S_DrawSplashes()
 					c1 = ripple->init >> 2;
 				else
 					c1 = ripple->life >> 2;
-
 				c1 <<= 3;
-
 				if (c1 > 255)
 					c1 = 255;
-
 				c = RGB_MAKE(c1, c1, c1);
 			}
 		}
@@ -4272,19 +4263,23 @@ void S_DrawSplashes()
 				c1 = ripple->init >> 1;
 			else
 				c1 = ripple->life >> 1;
-
 			c1 <<= 3;
-
 			if (c1 > 255)
 				c1 = 255;
-
 			c = RGB_MAKE(c1, c1, c1);
 		}
 
+		// Underwater death green blood...
+		if (ripple->flags & 0x40)
+		{
+			nSprite = objects[EXPLOSION1].mesh_index;
+			c = RGB_MAKE(ripple->r, ripple->g, ripple->b);
+		}
+
 		if ((x3 - x2) * (y1 - y2) - (y3 - y2) * (x1 - x2) >= 0)
-			HWI_InsertAlphaSprite_Sorted(x1, y1, z1, c, x2, y2, z2, c, x4, y4, z4, c, x3, y3, z3, c, nSprite, DT_POLY_WGTA, 0);
+			HWI_InsertAlphaSprite_Sorted(x1, y1, z1, c, x2, y2, z2, c, x4, y4, z4, c, x3, y3, z3, c, nSprite, DT_POLY_WGTA, FALSE);
 		else
-			HWI_InsertAlphaSprite_Sorted(x1, y1, z1, c, x3, y3, z3, c, x4, y4, z4, c, x2, y2, z2, c, nSprite, DT_POLY_WGTA, 1);
+			HWI_InsertAlphaSprite_Sorted(x1, y1, z1, c, x3, y3, z3, c, x4, y4, z4, c, x2, y2, z2, c, nSprite, DT_POLY_WGTA, TRUE);
 	}
 }
 

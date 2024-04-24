@@ -162,23 +162,18 @@ void KayakCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 
 static void DoRipple(ITEM_INFO* item, short xoffset, short zoffset)
 {
-	RIPPLE_STRUCT* ripple;
-	long s, c, x, z, wh;
-	short room_number;
-
-	c = phd_cos(item->pos.y_rot);
-	s = phd_sin(item->pos.y_rot);
-	x = item->pos.x_pos + ((zoffset * s + xoffset * c) >> W2V_SHIFT);
-	z = item->pos.z_pos + ((zoffset * c - xoffset * s) >> W2V_SHIFT);
-	room_number = item->room_number;
+	long c = phd_cos(item->pos.y_rot);
+	long s = phd_sin(item->pos.y_rot);
+	long x = item->pos.x_pos + ((zoffset * s + xoffset * c) >> W2V_SHIFT);
+	long z = item->pos.z_pos + ((zoffset * c - xoffset * s) >> W2V_SHIFT);
+	short room_number = item->room_number;
 	GetFloor(x, item->pos.y_pos, z, &room_number);
-	wh = GetWaterHeight(x, item->pos.y_pos, z, room_number);
-
+	long wh = GetWaterHeight(x, item->pos.y_pos, z, room_number);
 	if (wh == NO_HEIGHT)
 		return;
-
-	ripple = SetupRipple(x, item->pos.y_pos, z, -2 - (GetRandomControl() & 1), 0);
-	ripple->init = 0;
+	RIPPLE_STRUCT* ripple = SetupRipple(x, wh + 10, z, -2 - (GetRandomControl() & 1), 0);
+	if (ripple != NULL)
+		ripple->init = 0;
 }
 
 static long TestHeight(ITEM_INFO* item, long x, long z, PHD_VECTOR* pos)

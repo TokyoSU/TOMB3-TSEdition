@@ -76,9 +76,13 @@ void TubeTrain(ITEM_INFO* item);
 void RumbleNoShake(ITEM_INFO* item);
 void BaddieBiteEffect(ITEM_INFO* item, BITE_INFO* bite);
 short DoBloodSplat(long x, long y, long z, short speed, short ang, short room_number);
+short DoBloodSplatGreen(long x, long y, long z, short speed, short ang, short room_number);
 short DoBloodSplatD(long x, long y, long z, short speed, short ang, short room_number);
+short DoBloodSplatDGreen(long x, long y, long z, short speed, short ang, short room_number);
 void DoLotsOfBlood(long x, long y, long z, short speed, short direction, short room_num, long num);
+void DoLotsOfBloodGreen(long x, long y, long z, short speed, short direction, short room_num, long num);
 void DoLotsOfBloodD(long x, long y, long z, short speed, short direction, short room_num, long num);
+void DoLotsOfBloodDGreen(long x, long y, long z, short speed, short direction, short room_num, long num);
 
 extern void(*effect_routines[])(ITEM_INFO* item);
 

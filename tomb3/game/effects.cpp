@@ -233,17 +233,17 @@ void ControlBubble1(short fx_number)
 	short room_number;
 
 	fx = &effects[fx_number];
-	fx->pos.y_rot += 1638;
-	fx->pos.x_rot += 2366;
+	fx->pos.y_rot += ANGLE(8);
+	fx->pos.x_rot += ANGLE(12);
 	fx->speed += fx->flag1;
 	x = fx->pos.x_pos + ((3 * phd_sin(fx->pos.y_rot)) >> W2V_SHIFT);
 	y = fx->pos.y_pos - (fx->speed >> 8);
 	z = fx->pos.z_pos + (phd_cos(fx->pos.x_rot) >> W2V_SHIFT);
 	room_number = fx->room_number;
+
 	floor = GetFloor(x, y, z, &room_number);
 	h = GetHeight(floor, x, y, z);
-
-	if (y > h || !floor)
+	if (y > h || floor == NULL)
 	{
 		KillEffect(fx_number);
 		return;
@@ -251,13 +251,12 @@ void ControlBubble1(short fx_number)
 
 	if (!(room[room_number].flags & ROOM_UNDERWATER))
 	{
-		SetupRipple(fx->pos.x_pos, room[fx->room_number].maxceiling, fx->pos.z_pos, -2 - (GetRandomControl() & 1), 1);
+		SetupRipple(fx->pos.x_pos, room[fx->room_number].maxceiling + 24, fx->pos.z_pos, 2 - (GetRandomControl() & 1), 1);
 		KillEffect(fx_number);
 		return;
 	}
 
 	c = GetCeiling(floor, x, y, z);
-
 	if (c == NO_HEIGHT || y <= c)
 	{
 		KillEffect(fx_number);
@@ -349,7 +348,7 @@ void WadeSplash(ITEM_INFO* item, long water, long depth)
 		SplashCount = 16;
 	}
 	else if (!(wibble & 0xF) && (!(GetRandomControl() & 0xF) || item->current_anim_state != AS_STOP))
-		SetupRipple(item->pos.x_pos, water, item->pos.z_pos, -16 - (GetRandomControl() & 0xF), item->current_anim_state == AS_STOP);
+		SetupRipple(item->pos.x_pos, water + 24, item->pos.z_pos, 16 - (GetRandomControl() & 0xF), item->current_anim_state == AS_STOP);
 }
 
 void WaterFall(short item_number)
@@ -1030,7 +1029,15 @@ short DoBloodSplat(long x, long y, long z, short speed, short ang, short room_nu
 		TriggerUnderwaterBlood(x, y, z, GetRandomControl() & 7);
 	else
 		TriggerBlood(x, y, z, ang >> 4, (GetRandomControl() & 7) + 6);
+	return -1;
+}
 
+short DoBloodSplatGreen(long x, long y, long z, short speed, short ang, short room_number)
+{
+	if (room[room_number].flags & ROOM_UNDERWATER)
+		TriggerUnderwaterBloodGreen(x, y, z, GetRandomControl() & 7);
+	else
+		TriggerBloodGreen(x, y, z, ang >> 4, (GetRandomControl() & 7) + 6);
 	return -1;
 }
 
@@ -1040,19 +1047,38 @@ short DoBloodSplatD(long x, long y, long z, short speed, short ang, short room_n
 		TriggerUnderwaterBloodD(x, y + 64, z, GetRandomDraw() & 7);
 	else
 		TriggerBloodD(x, y, z, ang >> 4, (GetRandomDraw() & 7) + 6);
+	return -1;
+}
 
+short DoBloodSplatDGreen(long x, long y, long z, short speed, short ang, short room_number)
+{
+	if (room[room_number].flags & ROOM_UNDERWATER)
+		TriggerUnderwaterBloodDGreen(x, y + 64, z, GetRandomDraw() & 7);
+	else
+		TriggerBloodDGreen(x, y, z, ang >> 4, (GetRandomDraw() & 7) + 6);
 	return -1;
 }
 
 void DoLotsOfBlood(long x, long y, long z, short speed, short direction, short room_num, long num)
 {
 	for (; num > 0; num--)
-		DoBloodSplat(x - (GetRandomControl() << 9) / 0x8000 + 256, y - (GetRandomControl() << 9) / 0x8000 + 256,
-			z - (GetRandomControl() << 9) / 0x8000 + 256, speed, direction, room_num);
+		DoBloodSplat(x - (GetRandomControl() << 9) / 0x8000 + 256, y - (GetRandomControl() << 9) / 0x8000 + 256, z - (GetRandomControl() << 9) / 0x8000 + 256, speed, direction, room_num);
+}
+
+void DoLotsOfBloodGreen(long x, long y, long z, short speed, short direction, short room_num, long num)
+{
+	for (; num > 0; num--)
+		DoBloodSplatGreen(x - (GetRandomControl() << 9) / 0x8000 + 256, y - (GetRandomControl() << 9) / 0x8000 + 256, z - (GetRandomControl() << 9) / 0x8000 + 256, speed, direction, room_num);
 }
 
 void DoLotsOfBloodD(long x, long y, long z, short speed, short direction, short room_num, long num)
 {
 	for (; num > 0; num--)
 		DoBloodSplatD(x - (GetRandomDraw() << 9) / 0x8000 + 256, y, z - (GetRandomDraw() << 9) / 0x8000 + 256, speed, direction, room_num);
+}
+
+void DoLotsOfBloodDGreen(long x, long y, long z, short speed, short direction, short room_num, long num)
+{
+	for (; num > 0; num--)
+		DoBloodSplatDGreen(x - (GetRandomDraw() << 9) / 0x8000 + 256, y, z - (GetRandomDraw() << 9) / 0x8000 + 256, speed, direction, room_num);
 }

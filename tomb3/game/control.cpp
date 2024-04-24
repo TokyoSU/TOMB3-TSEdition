@@ -1187,7 +1187,6 @@ void TestTriggers(short* data, long heavy)
 			if (type == SWITCH)
 			{
 				item->flags ^= (flags & IFL_CODEBITS);
-
 				if (flags & IFL_INVISIBLE)
 					item->flags |= IFL_SWITCH_ONESHOT;
 			}
@@ -1203,7 +1202,6 @@ void TestTriggers(short* data, long heavy)
 				}
 
 				item->flags &= ~(IFL_CODEBITS | IFL_REVERSE);
-
 				if (flags & IFL_INVISIBLE)
 					item->flags |= IFL_ANTITRIGGER_ONESHOT;
 			}

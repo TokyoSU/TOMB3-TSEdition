@@ -383,7 +383,7 @@ void CreateSaveGameInfo()
 
 		if (obj->save_flags)
 		{
-			flags = (ushort)item->flags;
+			flags = item->flags;
 			flags |= item->active << 16;
 			flags |= item->status << 17;
 			flags |= item->gravity_status << 19;
@@ -608,7 +608,7 @@ void ExtractSaveGameInfo()
 		if (obj->save_flags)
 		{
 			ReadSG(&flags, sizeof(ulong));
-			item->flags = (short)flags;
+			item->flags = (ushort)flags;
 
 			if (obj->intelligent)
 				ReadSG(&item->carried_item, sizeof(short));

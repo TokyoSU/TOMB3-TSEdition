@@ -527,15 +527,20 @@ enum item_status
 	ITEM_INVISIBLE
 };
 
-enum item_flags
+enum item_flags : ushort
 {
-	IFL_TRIGGERED = 0x20,
-	IFL_SWITCH_ONESHOT = 0x40,	//oneshot for switch items
-	IFL_ANTITRIGGER_ONESHOT = 0x80,	//oneshot for antitriggers
-	IFL_INVISIBLE = 0x100,	//also used as oneshot for everything else
-	IFL_CODEBITS = 0x3E00,
-	IFL_REVERSE = 0x4000,
-	IFL_CLEARBODY = 0x8000
+	IFL_CODEBITS_1 = 1 << 0,
+	IFL_CODEBITS_2 = 1 << 1,
+	IFL_CODEBITS_3 = 1 << 2,
+	IFL_CODEBITS_4 = 1 << 3,
+	IFL_CODEBITS_5 = 1 << 4,
+	IFL_TRIGGERED = 1 << 5,
+	IFL_SWITCH_ONESHOT = 1 << 6,	//oneshot for switch items
+	IFL_ANTITRIGGER_ONESHOT = 1 << 7,	//oneshot for antitriggers
+	IFL_INVISIBLE = 1 << 8,	//also used as oneshot for everything else
+	IFL_CODEBITS = (IFL_CODEBITS_1 | IFL_CODEBITS_2 | IFL_CODEBITS_3 | IFL_CODEBITS_4 | IFL_CODEBITS_5) << 9,
+	IFL_REVERSE = 1 << 14,
+	IFL_CLEARBODY = 1 << 15
 };
 
 enum sfx_options
@@ -688,7 +693,7 @@ struct ITEM_INFO
 	short hit_points;
 	ushort box_number;
 	short timer;
-	short flags;
+	ushort flags;
 	short shade;
 	short shadeB;
 	short carried_item;
@@ -1739,10 +1744,14 @@ struct RIPPLE_STRUCT
 	long x;
 	long y;
 	long z;
-	char flags;
-	uchar life;
-	uchar size;
+	uchar on;
+	uchar flags;
 	uchar init;
+	uchar life;
+	uchar r;
+	uchar g;
+	uchar b;
+	uchar size;
 };
 
 struct SPLASH_VERTS
