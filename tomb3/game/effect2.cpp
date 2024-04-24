@@ -2095,15 +2095,13 @@ void UpdateSparks()
 		sptr->Height = uchar(sptr->sHeight + ((fade * (sptr->dHeight - sptr->sHeight)) >> 16));
 	}
 
-	for (int i = 0; i < 192; i++)
+	for (int i = 0; i < _countof(sparks); i++)
 	{
 		sptr = &sparks[i];
-
 		if (!sptr->On || sptr->Dynamic == -1)
 			continue;
 
 		pDL = &spark_dynamics[sptr->Dynamic];
-
 		if (!pDL->On)
 			continue;
 

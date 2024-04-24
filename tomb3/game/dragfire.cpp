@@ -174,8 +174,7 @@ void ControlFlameThrower(short fx_number)
 
 	fx = &effects[fx_number];
 	fx->counter--;
-
-	if (!fx->counter)
+	if (fx->counter <= 0)
 	{
 		KillEffect(fx_number);
 		return;
@@ -193,14 +192,12 @@ void ControlFlameThrower(short fx_number)
 	{
 		if (GetRandomControl() & 1)
 			TriggerFlamethrowerSmoke(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos, 1);
-
 		KillEffect(fx_number);
 		return;
 	}
 
 	h = GetHeight(floor, fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
 	c = GetCeiling(floor, fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
-
 	if (fx->pos.y_pos >= h || fx->pos.y_pos <= c)
 	{
 		if (!fx->flag1)

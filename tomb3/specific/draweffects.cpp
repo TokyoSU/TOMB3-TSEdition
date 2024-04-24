@@ -3724,10 +3724,9 @@ void S_DrawSparks()
 	w = dm->w;
 	h = dm->h;
 
-	for (int i = 0; i < 192; i++)
+	for (int i = 0; i < _countof(sparks); i++)
 	{
 		sptr = &sparks[i];
-
 		if (!sptr->On)
 			continue;
 

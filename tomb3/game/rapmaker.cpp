@@ -82,17 +82,19 @@ void RaptorEmitterControl(short item_number)
 	raptor->current_anim_state = anims[raptor->anim_number].current_anim_state;
 	raptor->goal_anim_state = raptor->current_anim_state;
 	raptor->required_anim_state = 0;
-	raptor->flags &= ~(IFL_CLEARBODY | IFL_INVISIBLE | 3);
-	raptor->data = 0;
+	raptor->flags &= ~(IFL_CLEARBODY | IFL_INVISIBLE);
+	if (item->flags & IFL_CODEBITS_1)
+		raptor->flags |= IFL_CODEBITS_1;
+	raptor->data = NULL;
 	raptor->hit_points = objects[raptor->object_number].hit_points;
 	raptor->mesh_bits = -1;
 	raptor->status = ITEM_ACTIVE;
-	raptor->collidable = 1;
+	raptor->collidable = TRUE;
 
 	if (raptor->active)
 		RemoveActiveItem(RaptorItem[lp]);
 
 	AddActiveItem(RaptorItem[lp]);
 	ItemNewRoom(RaptorItem[lp], item->room_number);
-	EnableBaddieAI(RaptorItem[lp], 1);
+	EnableBaddieAI(RaptorItem[lp], TRUE);
 }

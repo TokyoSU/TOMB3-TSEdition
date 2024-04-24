@@ -868,7 +868,7 @@ void PrintObjects(short room_number)
 				item->after_death++;
 				if (item->after_death == 2 || item->after_death == 5 || item->after_death == 11 || item->after_death == 20 || item->after_death == 27 || item->after_death == 32 || !(GetRandomDraw() & 7))
 				{
-					if (item->object_number == RAPTOR)
+					if (item->object_number == RAPTOR && (item->flags & IFL_CODEBITS_1))
 						DoLotsOfBloodDGreen(item->pos.x_pos, item->pos.y_pos - 128, item->pos.z_pos, 0, short(GetRandomDraw() << 1), item->room_number, 1);
 					else
 						DoLotsOfBloodD(item->pos.x_pos, item->pos.y_pos - 128, item->pos.z_pos, 0, short(GetRandomDraw() << 1), item->room_number, 1);
